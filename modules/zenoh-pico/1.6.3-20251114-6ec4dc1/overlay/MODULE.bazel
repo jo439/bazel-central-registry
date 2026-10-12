@@ -1,0 +1,9 @@
+module(
+    name = "zenoh-pico",
+    version = "1.6.3-20251114-6ec4dc1",
+    bazel_compatibility = [">=7.2.1"],
+)
+
+bazel_dep(name = "package_metadata", version = "0.0.10")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "rules_cc", version = "0.2.18")

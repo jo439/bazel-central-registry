@@ -12,6 +12,7 @@
         "github:eclipse-zenoh/zenoh-pico"
     ],
     "versions": [
+        "1.6.3-20251114-6ec4dc1",
         "1.7.2",
         "1.8.0",
         "1.9.0",

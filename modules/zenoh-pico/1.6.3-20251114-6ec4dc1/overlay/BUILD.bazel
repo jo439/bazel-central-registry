@@ -1,0 +1,85 @@
+load("@package_metadata//licenses/rules:license.bzl", "license")
+load("@package_metadata//purl:purl.bzl", "purl")
+load("@package_metadata//rules:package_metadata.bzl", "package_metadata")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+package(default_package_metadata = [":package_metadata"])
+
+package_metadata(
+    name = "package_metadata",
+    attributes = [":license"],
+    purl = purl.bazel(
+        module_name(),
+        module_version(),
+    ),
+    visibility = ["//visibility:public"],
+)
+
+license(
+    name = "license",
+    kind = "@package_metadata//licenses/spdx:Apache-2.0",
+    text = "LICENSE",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "zenoh-pico",
+    srcs = glob(
+        include = ["src/**/*.c"],
+        exclude = ["src/system/**/*.c"],
+    ) + select({
+        "@platforms//os:linux": glob(["src/system/unix/*.c"]),
+    }) + glob(["src/system/common/*.c"]),
+    hdrs = glob(["include/**/*.h"]),
+    defines = [
+        "FRAG_MAX_SIZE=8192",
+        "ZENOH_DEBUG=0",
+        "Z_FEATURE_MULTI_THREAD=1",
+        "Z_FEATURE_PUBLICATION=1",
+        "Z_FEATURE_QUERY=1",
+        "Z_FEATURE_QUERYABLE=1",
+        "Z_FEATURE_SUBSCRIPTION=1",
+    ] + select({
+        "@platforms//os:linux": ["ZENOH_LINUX"],
+    }),
+    copts = ["-pthread"],
+    includes = ["include"],
+    linkopts = [
+        "-lrt",
+        "-pthread",
+    ],
+    tags = ["manual"],
+    target_compatible_with = ["@platforms//os:linux"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "test_utils",
+    testonly = True,
+    srcs = glob(["tests/utils/*.c"]),
+    hdrs = glob(["tests/utils/*.h"]),
+    tags = ["manual"],
+    deps = [":zenoh-pico"],
+)
+
+[cc_test(
+    name = src[6:-2],
+    size = "small",
+    srcs = [src],
+    tags = ["requires-network"],
+    deps = [
+        ":test_utils",
+        ":zenoh-pico",
+    ],
+) for src in glob(
+    ["tests/*_test.c"],
+    exclude = [
+        "tests/z_api_alignment_test.c",
+        "tests/z_api_liveliness_test.c",
+        "tests/z_api_matching_test.c",
+        "tests/z_api_queryable_test.c",
+        "tests/z_client_test.c",
+        "tests/z_session_test.c",
+        "tests/z_wildcard_subscription_test.c",
+    ],
+)]

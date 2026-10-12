@@ -1,0 +1,9 @@
+{
+    "url": "https://github.com/eclipse-zenoh/zenoh-pico/archive/6ec4dc1995f185330e4f6faa8c719eb86f180deb.tar.gz",
+    "integrity": "sha256-6XsaHvEHw8+Te146jqePtTgaibWUzmeyLQ5lMBknlGs=",
+    "strip_prefix": "zenoh-pico-6ec4dc1995f185330e4f6faa8c719eb86f180deb",
+    "overlay": {
+        "BUILD.bazel": "sha256-GhVbN9JKmD1sy7HkbGFW/v6nIu2iK09V3Zi+i1CSC7U=",
+        "MODULE.bazel": "sha256-O8RP2ncJJLRqnwAoTPoGPbmoHeBU+jhDeqyQ4P3QNic="
+    }
+}
